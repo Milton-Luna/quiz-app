@@ -1,3 +1,5 @@
-// Funciones utilitarias
-// Se poblarán en los segmentos siguientes
-export {};
+export {
+  shuffleArray,
+  generateQuestions,
+  generateOneQuestion,
+} from "./questionGenerator";
