@@ -6,62 +6,54 @@ export const TIMER_DURATION = 15;
  * Temporizador regresivo de 15 segundos por pregunta.
  *
  * - Se reinicia automáticamente cuando cambia `questionId`.
- * - Se detiene cuando `isRunning` es false (ej: usuario respondió).
- * - Llama a `onTimeout` cuando llega a 0.
+ * - Se pausa cuando `isRunning` es false.
+ * - Llama a `onTimeout` mediante un setTimeout independiente
+ *   (no dentro de un state updater) para evitar doble disparo en Strict Mode.
  */
 export function useTimer(
-  /** ID de la pregunta actual — cambiar este valor reinicia el contador */
   questionId: string | undefined,
-  /** false pausa el timer (ej: durante feedback de respuesta) */
   isRunning: boolean,
-  /** Se llama una sola vez cuando el tiempo llega a 0 */
   onTimeout: () => void
 ) {
   const [timeLeft, setTimeLeft] = useState(TIMER_DURATION);
-  // Ref para evitar stale closure en el callback de timeout
   const onTimeoutRef = useRef(onTimeout);
 
+  // Mantener la ref actualizada sin re-ejecutar el efecto
   useEffect(() => {
     onTimeoutRef.current = onTimeout;
   });
 
-  // Reiniciar y arrancar el timer cuando cambia la pregunta o el estado
   useEffect(() => {
-    if (!isRunning || !questionId) {
-      return;
-    }
+    if (!isRunning || !questionId) return;
 
-    // Reset al comenzar una nueva pregunta
+    // Reiniciar al comenzar una nueva pregunta
     setTimeLeft(TIMER_DURATION);
 
+    // Intervalo que decrementa el contador cada segundo
     const intervalId = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= 1) {
-          clearInterval(intervalId);
-          onTimeoutRef.current();
-          return 0;
-        }
-        return prev - 1;
-      });
+      setTimeLeft((prev) => Math.max(0, prev - 1));
     }, 1000);
 
-    return () => clearInterval(intervalId);
-  }, [questionId, isRunning]); // Se re-ejecuta en cada nueva pregunta
+    // Timeout independiente que dispara el callback al expirar
+    // (fuera del state updater → no se llama dos veces en Strict Mode)
+    const timeoutId = setTimeout(() => {
+      onTimeoutRef.current();
+    }, TIMER_DURATION * 1000);
 
-  /**
-   * Porcentaje restante del tiempo (100 → 0).
-   * Útil para la barra de progreso del timer.
-   */
+    return () => {
+      clearInterval(intervalId);
+      clearTimeout(timeoutId);
+    };
+  }, [questionId, isRunning]);
+
+  /** Porcentaje de tiempo restante (100 → 0), para la ProgressBar */
   const timePercent = Math.round((timeLeft / TIMER_DURATION) * 100);
 
-  /**
-   * Clase de color según urgencia:
-   * - verde (>50%), amarillo (25–50%), rojo (<25%)
-   */
+  /** Clase Tailwind de color según urgencia */
   const getTimerColor = useCallback(() => {
-    if (timeLeft > 7) return "text-green-500 dark:text-green-400";
-    if (timeLeft > 4) return "text-yellow-500 dark:text-yellow-400";
-    return "text-red-500 dark:text-red-400";
+    if (timeLeft > 7) return "text-green-400 dark:text-green-300";
+    if (timeLeft > 4) return "text-yellow-400 dark:text-yellow-300";
+    return "text-red-400 dark:text-red-300";
   }, [timeLeft]);
 
   return { timeLeft, timePercent, getTimerColor };
