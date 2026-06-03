@@ -1,54 +1,34 @@
-import { useTimer } from "~/hooks";
-
 interface TimerDisplayProps {
-  questionId: string | undefined;
-  isRunning: boolean;
-  onTimeout: () => void;
+  timeLeft: number;
+  colorClass: string;
 }
 
 /**
- * Muestra el tiempo restante con cambio de color según urgencia.
- * Incluye la barra de progreso visual.
- * Delega el estado del timer al hook useTimer.
+ * Componente presentacional: muestra los segundos restantes.
+ * El estado real viene de useTimer, que se usa en la página Quiz.
  */
-export function TimerDisplay({
-  questionId,
-  isRunning,
-  onTimeout,
-}: TimerDisplayProps) {
-  const { timeLeft, timePercent, getTimerColor } = useTimer(
-    questionId,
-    isRunning,
-    onTimeout
-  );
-
+export function TimerDisplay({ timeLeft, colorClass }: TimerDisplayProps) {
   const isUrgent = timeLeft <= 5;
 
   return (
-    <div className="flex items-center gap-3">
-      {/* Ícono de reloj con animación de pulso en los últimos 5 segundos */}
+    <div className="flex items-center gap-2" aria-live="polite">
       <span
         aria-hidden="true"
         className={`text-lg select-none ${isUrgent ? "animate-bounce" : ""}`}
       >
         ⏱️
       </span>
-
-      {/* Número de segundos */}
       <span
-        aria-live="polite"
         aria-label={`${timeLeft} segundos restantes`}
         className={`
-          w-8 text-center font-bold text-xl tabular-nums transition-colors duration-300
-          ${getTimerColor()}
+          w-7 text-center font-bold text-xl tabular-nums
+          transition-colors duration-300
+          ${colorClass}
           ${isUrgent ? "animate-pulse" : ""}
         `}
       >
         {timeLeft}
       </span>
-
-      {/* Porcentaje para screen readers */}
-      <span className="sr-only">{timePercent}% del tiempo restante</span>
     </div>
   );
 }
