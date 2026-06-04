@@ -58,11 +58,10 @@ export default function Results() {
   const location = useLocation();
   const { highScore } = useHighScore();
 
-  // Recuperar el score pasado desde la página Quiz
   const locationState = location.state as { score?: number } | null;
   const score = locationState?.score;
 
-  // Si alguien entra directamente a /results sin jugar, redirigir al inicio
+  // Redirigir si alguien entra directamente sin haber jugado
   useEffect(() => {
     if (score === undefined) {
       navigate("/", { replace: true });
@@ -76,34 +75,34 @@ export default function Results() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center gap-6 pt-6 pb-10 text-center">
+      <div className="flex flex-col items-center gap-6 pt-4 pb-10 text-center">
 
-        {/* ── Emoji resultado ── */}
+        {/* ── Emoji de resultado con animación ── */}
         <div
-          className="text-7xl drop-shadow-lg"
+          className="text-7xl drop-shadow-lg animate-scale-in"
           aria-hidden="true"
         >
           {emoji}
         </div>
 
-        {/* ── Mensaje ── */}
-        <div className="space-y-2">
+        {/* ── Título y subtítulo ── */}
+        <div className="space-y-2 animate-fade-in-up" style={{ animationDelay: "80ms" }}>
           <h2 className="text-3xl font-extrabold text-white tracking-tight">
             {title}
           </h2>
-          <p className="text-indigo-200 dark:text-indigo-300 text-sm max-w-xs mx-auto">
+          <p className="text-indigo-200 dark:text-indigo-300 text-sm max-w-xs mx-auto leading-relaxed">
             {subtitle}
           </p>
         </div>
 
-        {/* ── Badge de nuevo récord ── */}
+        {/* ── Badge nuevo récord ── */}
         {isNewRecord && (
           <div
             className="
               flex items-center gap-2 px-5 py-2 rounded-full
               bg-amber-400/25 border border-amber-400/40
               text-amber-200 font-bold text-sm
-              animate-bounce
+              animate-slide-down
             "
             role="status"
           >
@@ -118,27 +117,30 @@ export default function Results() {
             w-full rounded-2xl overflow-hidden
             bg-white/10 dark:bg-white/5
             border border-white/20
-            shadow-xl
+            shadow-2xl
+            animate-fade-in-up
           "
+          style={{ animationDelay: "120ms" }}
         >
           {/* Score principal */}
           <div className="py-8 px-6 border-b border-white/10">
-            <p className="text-xs uppercase tracking-widest text-white/50 mb-1 font-semibold">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-2">
               Tu puntaje
             </p>
             <p
-              className="text-7xl font-black text-white leading-none"
-              aria-label={`Puntaje: ${score} respuestas correctas`}
+              className="text-8xl font-black text-white leading-none animate-scale-in"
+              style={{ animationDelay: "200ms" }}
+              aria-label={`Puntaje: ${score} ${score === 1 ? "respuesta correcta" : "respuestas correctas"}`}
             >
               {score}
             </p>
-            <p className="text-indigo-200 text-sm mt-1">
-              respuestas correctas
+            <p className="text-indigo-200 text-sm mt-2">
+              {score === 1 ? "respuesta correcta" : "respuestas correctas"}
             </p>
           </div>
 
           {/* High Score */}
-          <div className="py-5 px-6 flex items-center justify-between">
+          <div className="py-4 px-6 flex items-center justify-between">
             <div className="flex items-center gap-2 text-amber-300">
               <span aria-hidden="true">🏆</span>
               <span className="text-sm font-semibold">Mejor racha</span>
@@ -150,8 +152,10 @@ export default function Results() {
         </div>
 
         {/* ── Acciones ── */}
-        <div className="w-full space-y-3">
-          {/* Volver a jugar */}
+        <div
+          className="w-full space-y-3 animate-fade-in-up"
+          style={{ animationDelay: "240ms" }}
+        >
           <button
             onClick={() => navigate("/quiz")}
             className="
@@ -168,7 +172,6 @@ export default function Results() {
             Intentar de nuevo 🔄
           </button>
 
-          {/* Ir al inicio */}
           <button
             onClick={() => navigate("/")}
             className="

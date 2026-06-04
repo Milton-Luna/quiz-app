@@ -10,10 +10,13 @@ interface QuestionCardProps {
   onAnswer: (answer: string) => void;
 }
 
+/** Delay de entrada en ms para cada opción (efecto stagger) */
+const STAGGER_DELAYS = [0, 80, 160, 240] as const;
+
 /**
  * Tarjeta principal del quiz.
- * Muestra la bandera (preguntas de tipo flag) o el texto de la pregunta,
- * seguido de los 4 botones de respuesta.
+ * Usa `animate-fade-in-up` para animar la entrada — la página Quiz la monta
+ * con una `key` distinta por pregunta, forzando re-mount y re-animación.
  */
 export function QuestionCard({
   question,
@@ -30,11 +33,12 @@ export function QuestionCard({
         backdrop-blur-sm
         border border-white/20 dark:border-white/10
         shadow-2xl
+        animate-fade-in-up
       "
     >
-      {/* ── Header de la tarjeta ── */}
-      <div className="px-6 pt-6 pb-4 border-b border-white/10">
-        <p className="text-xs font-semibold uppercase tracking-widest text-white/50 mb-2">
+      {/* ── Header ── */}
+      <div className="px-5 pt-5 pb-4 border-b border-white/10 sm:px-6 sm:pt-6">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-white/40 mb-3">
           Pregunta {questionNumber}
         </p>
 
@@ -49,14 +53,14 @@ export function QuestionCard({
         )}
 
         {/* Texto de la pregunta */}
-        <h2 className="text-lg sm:text-xl font-bold text-white leading-snug">
+        <h2 className="text-lg sm:text-xl font-extrabold text-white leading-snug">
           {question.question}
         </h2>
       </div>
 
-      {/* ── Opciones de respuesta ── */}
-      <div className="p-4 sm:p-6 space-y-3">
-        {question.options.map((option) => (
+      {/* ── Opciones ── */}
+      <div className="p-4 sm:p-5 space-y-2.5">
+        {question.options.map((option, index) => (
           <AnswerButton
             key={option.id}
             id={option.id}
@@ -64,6 +68,7 @@ export function QuestionCard({
             isSelected={selectedAnswer === option.text}
             isCorrect={option.isCorrect}
             isAnswered={isAnswered}
+            delay={STAGGER_DELAYS[index]}
             onClick={() => onAnswer(option.text)}
           />
         ))}

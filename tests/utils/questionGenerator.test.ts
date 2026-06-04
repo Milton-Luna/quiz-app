@@ -2,7 +2,7 @@ import { describe, it, expect } from "vitest";
 import { shuffleArray, generateQuestions } from "~/utils";
 import type { Country } from "~/types";
 
-// ─── Datos de prueba ──────────────────────────────────────────────────────────
+// Datos de prueba 
 
 const MOCK_COUNTRIES: Country[] = Array.from({ length: 10 }, (_, i) => ({
   name: `Country${i}`,
@@ -12,7 +12,7 @@ const MOCK_COUNTRIES: Country[] = Array.from({ length: 10 }, (_, i) => ({
   flagAlt: `Flag of Country${i}`,
 }));
 
-// ─── shuffleArray ─────────────────────────────────────────────────────────────
+// shuffleArray 
 
 describe("shuffleArray", () => {
   it("no muta el array original", () => {
@@ -31,7 +31,7 @@ describe("shuffleArray", () => {
   });
 });
 
-// ─── generateQuestions ────────────────────────────────────────────────────────
+// generateQuestions 
 
 describe("generateQuestions", () => {
   it("genera exactamente una opción correcta por pregunta", () => {

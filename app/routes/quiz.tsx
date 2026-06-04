@@ -8,12 +8,7 @@ import {
   TimerDisplay,
   ProgressBar,
 } from "~/components";
-import {
-  useQuiz,
-  useTimer,
-  useHighScore,
-  useSoundEffect,
-} from "~/hooks";
+import { useQuiz, useTimer, useHighScore, useSoundEffect } from "~/hooks";
 
 export function meta(_args: Route.MetaArgs) {
   return [
@@ -22,24 +17,22 @@ export function meta(_args: Route.MetaArgs) {
   ];
 }
 
-// ─── Spinner de carga ─────────────────────────────────────────────────────────
+// ─── Pantallas auxiliares ─────────────────────────────────────────────────────
 
 function LoadingScreen() {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 py-20">
+    <div className="flex flex-col items-center justify-center gap-4 py-24">
       <div
         className="w-14 h-14 rounded-full border-4 border-white/20 border-t-white animate-spin"
         role="status"
         aria-label="Cargando países..."
       />
-      <p className="text-white/70 text-sm font-medium animate-pulse">
+      <p className="text-white/60 text-sm font-medium animate-pulse">
         Cargando países...
       </p>
     </div>
   );
 }
-
-// ─── Pantalla de error ────────────────────────────────────────────────────────
 
 function ErrorScreen({
   message,
@@ -49,7 +42,7 @@ function ErrorScreen({
   onRetry: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center gap-5 py-16 text-center">
+    <div className="flex flex-col items-center gap-5 py-20 text-center animate-fade-in-up">
       <span className="text-5xl" aria-hidden="true">😵</span>
       <div>
         <h2 className="text-xl font-bold text-white mb-1">Error al cargar</h2>
@@ -109,21 +102,18 @@ export default function Quiz() {
     startQuiz();
   }, [startQuiz]);
 
-  // 2) Reproducir sonido cuando cambia a 'answered'
+  // 2) Reproducir sonido cuando el estado cambia a 'answered'
   const wasAnsweredRef = useRef(false);
   useEffect(() => {
     const isNowAnswered = status === "answered";
     if (isNowAnswered && !wasAnsweredRef.current) {
-      if (isLastAnswerCorrect) {
-        playSuccess();
-      } else {
-        playError();
-      }
+      if (isLastAnswerCorrect) playSuccess();
+      else playError();
     }
     wasAnsweredRef.current = isNowAnswered;
   }, [status, isLastAnswerCorrect, playSuccess, playError]);
 
-  // 3) Auto-avanzar cuando la respuesta es incorrecta (1.5 s de feedback)
+  // 3) Auto-avanzar tras respuesta incorrecta (1.5 s de feedback visual)
   useEffect(() => {
     if (status === "answered" && !isLastAnswerCorrect) {
       const id = setTimeout(() => nextQuestion(), 1500);
@@ -131,7 +121,7 @@ export default function Quiz() {
     }
   }, [status, isLastAnswerCorrect, nextQuestion]);
 
-  // 4) Navegar a resultados cuando el juego termina
+  // 4) Navegar a resultados cuando termina el juego
   useEffect(() => {
     if (status === "finished") {
       updateHighScore(score);
@@ -139,26 +129,23 @@ export default function Quiz() {
     }
   }, [status, score, updateHighScore, navigate]);
 
-  // ── Renders condicionales ─────────────────────────────────────────────────
+  // ── Renders ───────────────────────────────────────────────────────────────
 
   const isLoading = status === "idle" || status === "loading";
 
   return (
     <Layout>
-      {/* Error */}
       {errorMessage && (
         <ErrorScreen message={errorMessage} onRetry={startQuiz} />
       )}
 
-      {/* Cargando */}
       {!errorMessage && isLoading && <LoadingScreen />}
 
-      {/* Juego activo */}
       {!errorMessage && !isLoading && currentQuestion && (
         <div className="flex flex-col gap-4">
 
           {/* ── Fila superior: Score + Timer ── */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between animate-slide-down">
             <ScoreBadge score={score} highScore={highScore} />
             <TimerDisplay
               timeLeft={timeLeft}
@@ -169,8 +156,11 @@ export default function Quiz() {
           {/* ── Barra de progreso del timer ── */}
           <ProgressBar percent={timePercent} />
 
-          {/* ── Tarjeta de pregunta ── */}
+          {/* ── Tarjeta de pregunta ──
+              La key=currentQuestion.id fuerza el re-mount en cada nueva pregunta,
+              disparando la animación animate-fade-in-up del QuestionCard. ── */}
           <QuestionCard
+            key={currentQuestion.id}
             question={currentQuestion}
             questionNumber={currentIndex + 1}
             selectedAnswer={selectedAnswer}
@@ -178,7 +168,7 @@ export default function Quiz() {
             onAnswer={handleAnswer}
           />
 
-          {/* ── Botón "Siguiente" (solo si acertó) ── */}
+          {/* ── Botón "Siguiente" (respuesta correcta) ── */}
           {status === "answered" && isLastAnswerCorrect && (
             <button
               onClick={nextQuestion}
@@ -190,6 +180,7 @@ export default function Quiz() {
                 text-white font-extrabold text-base tracking-wide
                 shadow-lg shadow-emerald-900/40
                 transition-all duration-200
+                animate-scale-in
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
               "
             >
@@ -197,14 +188,14 @@ export default function Quiz() {
             </button>
           )}
 
-          {/* ── Mensaje de respuesta incorrecta (auto-navega en 1.5s) ── */}
+          {/* ── Aviso de respuesta incorrecta (auto-navega en 1.5 s) ── */}
           {status === "answered" && !isLastAnswerCorrect && (
             <div
               className="
                 w-full py-3 px-4 rounded-xl text-center
                 bg-red-500/20 border border-red-400/30
                 text-red-200 text-sm font-semibold
-                animate-pulse
+                animate-scale-in
               "
               role="alert"
             >

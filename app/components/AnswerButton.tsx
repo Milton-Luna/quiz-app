@@ -10,6 +10,8 @@ interface AnswerButtonProps {
   /** El quiz ya tiene una respuesta seleccionada (status = 'answered') */
   isAnswered: boolean;
   onClick: () => void;
+  /** Retraso de animación en ms para efecto stagger (0, 80, 160, 240) */
+  delay?: number;
 }
 
 // ─── Helpers de estilo ────────────────────────────────────────────────────────
@@ -26,19 +28,16 @@ function getButtonStyle(
   isSelected: boolean,
   isCorrect: boolean
 ): string {
-  // Estado base (antes de responder)
   if (!isAnswered) {
     return `
       bg-white/10 dark:bg-white/5
       border-white/25 dark:border-white/15
       hover:bg-white/20 dark:hover:bg-white/15
       hover:border-white/50 dark:hover:border-white/30
-      hover:scale-[1.01] active:scale-[0.99]
+      hover:scale-[1.015] active:scale-[0.985]
       text-white cursor-pointer
     `;
   }
-
-  // Respuesta correcta seleccionada por el usuario ✓
   if (isSelected && isCorrect) {
     return `
       bg-emerald-500/90 dark:bg-emerald-600/90
@@ -46,8 +45,6 @@ function getButtonStyle(
       text-white scale-[1.01]
     `;
   }
-
-  // Respuesta incorrecta seleccionada por el usuario ✗
   if (isSelected && !isCorrect) {
     return `
       bg-red-500/90 dark:bg-red-600/90
@@ -55,8 +52,6 @@ function getButtonStyle(
       text-white scale-[1.01]
     `;
   }
-
-  // Respuesta correcta revelada (el usuario eligió otra) — borde verde
   if (!isSelected && isCorrect) {
     return `
       bg-emerald-500/20 dark:bg-emerald-600/20
@@ -64,8 +59,6 @@ function getButtonStyle(
       text-emerald-200 dark:text-emerald-300
     `;
   }
-
-  // Opción incorrecta no seleccionada — atenuada
   return `
     bg-white/5 dark:bg-white/5
     border-white/10 dark:border-white/10
@@ -89,7 +82,7 @@ function getIcon(
 // ─── Componente ───────────────────────────────────────────────────────────────
 
 /**
- * Botón de respuesta con 5 estados visuales:
+ * Botón de respuesta con 5 estados visuales y animación de entrada stagger.
  * idle | selected-correct | selected-wrong | reveal-correct | disabled
  */
 export function AnswerButton({
@@ -99,27 +92,29 @@ export function AnswerButton({
   isCorrect,
   isAnswered,
   onClick,
+  delay = 0,
 }: AnswerButtonProps) {
   const buttonStyle = getButtonStyle(isAnswered, isSelected, isCorrect);
   const icon = getIcon(isAnswered, isSelected, isCorrect);
-  const isDisabled = isAnswered;
 
   return (
     <button
       onClick={onClick}
-      disabled={isDisabled}
+      disabled={isAnswered}
       aria-pressed={isSelected}
       aria-label={`Opción ${id}: ${text}${isAnswered && isCorrect ? " (respuesta correcta)" : ""}`}
+      style={{ animationDelay: `${delay}ms` }}
       className={`
         w-full flex items-center gap-3 px-4 py-3.5
         rounded-xl border-2 font-semibold text-left
         transition-all duration-200
+        animate-fade-in-up
         focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
         disabled:cursor-not-allowed
         ${buttonStyle}
       `}
     >
-      {/* Letra identificadora (A/B/C/D) */}
+      {/* Badge de letra (A/B/C/D) */}
       <span
         className={`
           flex-shrink-0 w-8 h-8 rounded-lg
@@ -136,10 +131,10 @@ export function AnswerButton({
       {/* Texto de la opción */}
       <span className="flex-1 text-sm sm:text-base leading-snug">{text}</span>
 
-      {/* Ícono de resultado */}
+      {/* Ícono de resultado con animación scale-in */}
       {icon && (
         <span
-          className="flex-shrink-0 text-lg font-bold"
+          className="flex-shrink-0 text-lg font-bold animate-scale-in"
           aria-hidden="true"
         >
           {icon}
