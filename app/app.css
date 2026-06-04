@@ -1,13 +1,76 @@
 @import "tailwindcss";
 
+/* ── Design tokens ─────────────────────────────────────────────────────────── */
+
 @theme {
+  /* Fuente principal */
   --font-nunito: "Nunito", ui-sans-serif, system-ui, sans-serif;
+
+  /* Animaciones personalizadas registradas como utilities de Tailwind */
+  --animate-fade-in-up: fade-in-up 0.42s ease-out both;
+  --animate-scale-in:   scale-in   0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-slide-down: slide-down 0.3s  ease-out both;
 }
 
-/* Modo oscuro activado por clase en <html> */
+/* ── Dark mode activado por clase en <html> ───────────────────────────────── */
+
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ── Keyframes ────────────────────────────────────────────────────────────── */
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Estilos base ─────────────────────────────────────────────────────────── */
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950 text-gray-900 dark:text-gray-100;
+  @apply bg-white dark:bg-gray-950;
+}
+
+/* Evitar el flash de tap-highlight en móviles */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Scrollbar sutil (navegadores webkit) */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgb(255 255 255 / 0.2);
+  border-radius: 999px;
 }

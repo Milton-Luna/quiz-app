@@ -27,13 +27,21 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="flex flex-col items-center gap-8 pt-6 pb-10">
+      <div className="flex flex-col items-center gap-7 pt-4 pb-10">
 
         {/* ── Hero ── */}
-        <div className="text-center space-y-3">
-          <div className="text-7xl mb-2 drop-shadow-lg" aria-hidden="true">
-            🌍
+        <div className="text-center space-y-3 animate-fade-in-up">
+          {/* Globo con halo pulsante */}
+          <div className="relative inline-flex items-center justify-center mb-1">
+            <span
+              className="absolute w-24 h-24 rounded-full bg-indigo-400/20 dark:bg-indigo-500/20 animate-ping"
+              aria-hidden="true"
+            />
+            <span className="relative text-7xl select-none drop-shadow-lg">
+              🌍
+            </span>
           </div>
+
           <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
             Country Quiz
           </h2>
@@ -50,26 +58,30 @@ export default function Home() {
               flex items-center gap-2 px-5 py-2.5 rounded-2xl
               bg-amber-400/20 border border-amber-400/30
               text-amber-200 dark:text-amber-300 font-semibold text-sm
+              animate-slide-down
             "
           >
             <span aria-hidden="true">🏆</span>
             <span>
               Tu récord:{" "}
-              <strong className="text-base">{highScore}</strong> correctas
+              <strong className="text-base">{highScore}</strong>{" "}
+              {highScore === 1 ? "correcta" : "correctas"}
             </span>
           </div>
         )}
 
-        {/* ── Características ── */}
+        {/* ── Características con stagger ── */}
         <ul className="w-full space-y-2.5">
-          {FEATURES.map(({ icon, label }) => (
+          {FEATURES.map(({ icon, label }, i) => (
             <li
               key={label}
+              style={{ animationDelay: `${i * 70}ms` }}
               className="
                 flex items-center gap-3 px-4 py-3 rounded-xl
                 bg-white/8 dark:bg-white/5
                 border border-white/10
                 text-white/80 text-sm
+                animate-fade-in-up
               "
             >
               <span className="text-xl" aria-hidden="true">
@@ -83,14 +95,16 @@ export default function Home() {
         {/* ── Botón de inicio ── */}
         <button
           onClick={() => navigate("/quiz")}
+          style={{ animationDelay: "280ms" }}
           className="
             w-full py-4 rounded-2xl
             bg-gradient-to-r from-violet-500 to-indigo-500
             hover:from-violet-400 hover:to-indigo-400
             active:scale-[0.98]
             text-white font-extrabold text-lg tracking-wide
-            shadow-lg shadow-indigo-900/40
+            shadow-lg shadow-indigo-900/50
             transition-all duration-200
+            animate-fade-in-up
             focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70
           "
         >

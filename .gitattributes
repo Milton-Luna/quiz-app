@@ -1,0 +1,9 @@
+# Normalizar todos los archivos de texto a LF en el repositorio
+* text=auto eol=lf
+
+# Archivos binarios — nunca convertir
+*.png  binary
+*.svg  binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
