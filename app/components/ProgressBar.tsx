@@ -3,13 +3,7 @@ interface ProgressBarProps {
   percent: number;
 }
 
-/**
- * Barra de progreso horizontal para el temporizador.
- * Cambia de color según el porcentaje restante:
- * - Verde  (>50%)
- * - Amarillo (25–50%)
- * - Rojo   (<25%)
- */
+
 export function ProgressBar({ percent }: ProgressBarProps) {
   const clampedPercent = Math.min(100, Math.max(0, percent));
 

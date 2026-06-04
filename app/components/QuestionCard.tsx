@@ -10,14 +10,10 @@ interface QuestionCardProps {
   onAnswer: (answer: string) => void;
 }
 
-/** Delay de entrada en ms para cada opción (efecto stagger) */
+
 const STAGGER_DELAYS = [0, 80, 160, 240] as const;
 
-/**
- * Tarjeta principal del quiz.
- * Usa `animate-fade-in-up` para animar la entrada — la página Quiz la monta
- * con una `key` distinta por pregunta, forzando re-mount y re-animación.
- */
+
 export function QuestionCard({
   question,
   questionNumber,

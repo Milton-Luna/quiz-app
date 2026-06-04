@@ -3,10 +3,7 @@ interface TimerDisplayProps {
   colorClass: string;
 }
 
-/**
- * Componente presentacional: muestra los segundos restantes.
- * El estado real viene de useTimer, que se usa en la página Quiz.
- */
+
 export function TimerDisplay({ timeLeft, colorClass }: TimerDisplayProps) {
   const isUrgent = timeLeft <= 5;
 

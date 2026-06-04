@@ -6,17 +6,11 @@ import type {
   QuestionType,
 } from "~/types";
 
-// ─── Constantes ───────────────────────────────────────────────────────────────
 
 const ANSWER_IDS: AnswerId[] = ["A", "B", "C", "D"];
 const OPTIONS_COUNT = 4;
 
-// ─── Utilidades de aleatoriedad ───────────────────────────────────────────────
 
-/**
- * Mezcla un array in-place usando el algoritmo Fisher-Yates.
- * Devuelve un nuevo array (no muta el original).
- */
 export function shuffleArray<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -26,16 +20,12 @@ export function shuffleArray<T>(array: T[]): T[] {
   return shuffled;
 }
 
-/**
- * Elige un elemento aleatorio de un array.
- */
+
 function pickRandom<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
 
-/**
- * Devuelve `count` elementos aleatorios del array excluyendo `exclude`.
- */
+
 function pickRandomExcluding<T>(
   array: T[],
   count: number,
@@ -45,12 +35,7 @@ function pickRandomExcluding<T>(
   return shuffleArray(pool).slice(0, count);
 }
 
-// ─── Construcción de opciones ─────────────────────────────────────────────────
 
-/**
- * Construye el array de 4 AnswerOption con las letras A/B/C/D.
- * La opción correcta va mezclada entre las incorrectas.
- */
 function buildOptions(
   correct: Country,
   wrongCountries: Country[],
@@ -65,12 +50,7 @@ function buildOptions(
   }));
 }
 
-// ─── Generadores por tipo ─────────────────────────────────────────────────────
 
-/**
- * Genera una pregunta de bandera:
- * Muestra la bandera → el usuario elige el nombre del país.
- */
 function generateFlagQuestion(
   countries: Country[],
   correctCountry: Country
@@ -91,10 +71,7 @@ function generateFlagQuestion(
   };
 }
 
-/**
- * Genera una pregunta de capital:
- * Muestra el nombre de la capital → el usuario elige el país.
- */
+
 function generateCapitalQuestion(
   countries: Country[],
   correctCountry: Country
@@ -114,14 +91,7 @@ function generateCapitalQuestion(
   };
 }
 
-// ─── Exportación principal ────────────────────────────────────────────────────
 
-/**
- * Genera `count` preguntas alternando de forma aleatoria entre
- * preguntas de bandera y de capital.
- *
- * Se asegura de no repetir el mismo país correcto consecutivamente.
- */
 export function generateQuestions(
   countries: Country[],
   count: number = 10
@@ -137,10 +107,9 @@ export function generateQuestions(
   let lastCountry: Country | null = null;
 
   for (let i = 0; i < count; i++) {
-    // Elegir tipo de forma aleatoria
+   
     const type = pickRandom(types);
 
-    // Elegir el país correcto (diferente al anterior para no repetir)
     let correctCountry: Country;
     do {
       correctCountry = pickRandom(countries);
@@ -159,10 +128,7 @@ export function generateQuestions(
   return questions;
 }
 
-/**
- * Genera UNA pregunta adicional del tipo que se necesite.
- * Útil para extender el quiz on-demand.
- */
+
 export function generateOneQuestion(
   countries: Country[],
   excludeCountry?: Country

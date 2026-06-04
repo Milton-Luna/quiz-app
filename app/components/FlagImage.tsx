@@ -5,10 +5,7 @@ interface FlagImageProps {
   alt: string;
 }
 
-/**
- * Imagen de bandera con lazy loading y estado de carga/error.
- * Muestra un skeleton mientras carga y un emoji 🏳 si falla.
- */
+
 export function FlagImage({ src, alt }: FlagImageProps) {
   const [loaded, setLoaded] = useState(false);
   const [error, setError] = useState(false);
@@ -23,7 +20,7 @@ export function FlagImage({ src, alt }: FlagImageProps) {
 
   return (
     <div className="relative w-full flex justify-center">
-      {/* Skeleton mientras carga */}
+      {}
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="w-56 h-36 rounded-xl bg-white/10 dark:bg-white/5 animate-pulse" />

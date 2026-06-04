@@ -2,8 +2,8 @@ import type { Config } from "@react-router/dev/config";
 
 export default {
   // Config options...
-  // Server-side render by default, to enable SPA mode set this to `false`
-  ssr: true,
+  // SPA mode: genera archivos estáticos, sin servidor Node en producción
+  ssr: false,
   future: {
     v8_middleware: true,
     v8_passThroughRequests: true,

@@ -29,9 +29,9 @@ export default function Home() {
     <Layout>
       <div className="flex flex-col items-center gap-7 pt-4 pb-10">
 
-        {/* ── Hero ── */}
+        {}
         <div className="text-center space-y-3 animate-fade-in-up">
-          {/* Globo con halo pulsante */}
+          {}
           <div className="relative inline-flex items-center justify-center mb-1">
             <span
               className="absolute w-24 h-24 rounded-full bg-indigo-400/20 dark:bg-indigo-500/20 animate-ping"
@@ -51,7 +51,7 @@ export default function Home() {
           </p>
         </div>
 
-        {/* ── High Score (solo si ya jugó) ── */}
+        {}
         {highScore > 0 && (
           <div
             className="
@@ -70,7 +70,7 @@ export default function Home() {
           </div>
         )}
 
-        {/* ── Características con stagger ── */}
+        {}
         <ul className="w-full space-y-2.5">
           {FEATURES.map(({ icon, label }, i) => (
             <li
@@ -92,7 +92,7 @@ export default function Home() {
           ))}
         </ul>
 
-        {/* ── Botón de inicio ── */}
+        {}
         <button
           onClick={() => navigate("/quiz")}
           style={{ animationDelay: "280ms" }}
