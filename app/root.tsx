@@ -31,7 +31,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-        {/* Script inline para aplicar el tema antes del primer render (evita FOUC) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `

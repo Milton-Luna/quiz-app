@@ -3,18 +3,17 @@ import type { AnswerId } from "~/types";
 interface AnswerButtonProps {
   id: AnswerId;
   text: string;
-  /** El usuario hizo clic en ESTE botón */
   isSelected: boolean;
-  /** Esta opción ES la respuesta correcta */
+
   isCorrect: boolean;
-  /** El quiz ya tiene una respuesta seleccionada (status = 'answered') */
+
   isAnswered: boolean;
   onClick: () => void;
-  /** Retraso de animación en ms para efecto stagger (0, 80, 160, 240) */
+
   delay?: number;
 }
 
-// ─── Helpers de estilo ────────────────────────────────────────────────────────
+
 
 const LETTER_COLORS: Record<AnswerId, string> = {
   A: "bg-violet-500  dark:bg-violet-600",
@@ -79,12 +78,6 @@ function getIcon(
   return "";
 }
 
-// ─── Componente ───────────────────────────────────────────────────────────────
-
-/**
- * Botón de respuesta con 5 estados visuales y animación de entrada stagger.
- * idle | selected-correct | selected-wrong | reveal-correct | disabled
- */
 export function AnswerButton({
   id,
   text,
@@ -114,7 +107,7 @@ export function AnswerButton({
         ${buttonStyle}
       `}
     >
-      {/* Badge de letra (A/B/C/D) */}
+      {}
       <span
         className={`
           flex-shrink-0 w-8 h-8 rounded-lg
@@ -128,10 +121,10 @@ export function AnswerButton({
         {id}
       </span>
 
-      {/* Texto de la opción */}
+      {}
       <span className="flex-1 text-sm sm:text-base leading-snug">{text}</span>
 
-      {/* Ícono de resultado con animación scale-in */}
+      {}
       {icon && (
         <span
           className="flex-shrink-0 text-lg font-bold animate-scale-in"

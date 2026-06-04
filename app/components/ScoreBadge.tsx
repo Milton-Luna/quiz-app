@@ -3,9 +3,7 @@ interface ScoreBadgeProps {
   highScore: number;
 }
 
-/**
- * Muestra el puntaje actual y el récord guardado en localStorage.
- */
+
 export function ScoreBadge({ score, highScore }: ScoreBadgeProps) {
   return (
     <div className="flex items-center gap-3 text-sm font-semibold">

@@ -17,8 +17,6 @@ export function meta(_args: Route.MetaArgs) {
   ];
 }
 
-// ─── Pantallas auxiliares ─────────────────────────────────────────────────────
-
 function LoadingScreen() {
   return (
     <div className="flex flex-col items-center justify-center gap-4 py-24">
@@ -64,12 +62,10 @@ function ErrorScreen({
   );
 }
 
-// ─── Página Quiz ──────────────────────────────────────────────────────────────
 
 export default function Quiz() {
   const navigate = useNavigate();
 
-  // ── Hooks ────────────────────────────────────────────────────────────────
   const {
     currentQuestion,
     currentIndex,
@@ -95,14 +91,10 @@ export default function Quiz() {
     handleTimeout
   );
 
-  // ── Efectos ───────────────────────────────────────────────────────────────
-
-  // 1) Iniciar el quiz al montar la página
   useEffect(() => {
     startQuiz();
   }, [startQuiz]);
 
-  // 2) Reproducir sonido cuando el estado cambia a 'answered'
   const wasAnsweredRef = useRef(false);
   useEffect(() => {
     const isNowAnswered = status === "answered";
@@ -113,7 +105,6 @@ export default function Quiz() {
     wasAnsweredRef.current = isNowAnswered;
   }, [status, isLastAnswerCorrect, playSuccess, playError]);
 
-  // 3) Auto-avanzar tras respuesta incorrecta (1.5 s de feedback visual)
   useEffect(() => {
     if (status === "answered" && !isLastAnswerCorrect) {
       const id = setTimeout(() => nextQuestion(), 1500);
@@ -121,7 +112,6 @@ export default function Quiz() {
     }
   }, [status, isLastAnswerCorrect, nextQuestion]);
 
-  // 4) Navegar a resultados cuando termina el juego
   useEffect(() => {
     if (status === "finished") {
       updateHighScore(score);
@@ -129,7 +119,6 @@ export default function Quiz() {
     }
   }, [status, score, updateHighScore, navigate]);
 
-  // ── Renders ───────────────────────────────────────────────────────────────
 
   const isLoading = status === "idle" || status === "loading";
 
@@ -144,7 +133,7 @@ export default function Quiz() {
       {!errorMessage && !isLoading && currentQuestion && (
         <div className="flex flex-col gap-4">
 
-          {/* ── Fila superior: Score + Timer ── */}
+          
           <div className="flex items-center justify-between animate-slide-down">
             <ScoreBadge score={score} highScore={highScore} />
             <TimerDisplay
@@ -153,12 +142,10 @@ export default function Quiz() {
             />
           </div>
 
-          {/* ── Barra de progreso del timer ── */}
+          
           <ProgressBar percent={timePercent} />
 
-          {/* ── Tarjeta de pregunta ──
-              La key=currentQuestion.id fuerza el re-mount en cada nueva pregunta,
-              disparando la animación animate-fade-in-up del QuestionCard. ── */}
+          
           <QuestionCard
             key={currentQuestion.id}
             question={currentQuestion}
@@ -168,7 +155,7 @@ export default function Quiz() {
             onAnswer={handleAnswer}
           />
 
-          {/* ── Botón "Siguiente" (respuesta correcta) ── */}
+
           {status === "answered" && isLastAnswerCorrect && (
             <button
               onClick={nextQuestion}
@@ -188,7 +175,6 @@ export default function Quiz() {
             </button>
           )}
 
-          {/* ── Aviso de respuesta incorrecta (auto-navega en 1.5 s) ── */}
           {status === "answered" && !isLastAnswerCorrect && (
             <div
               className="
